@@ -19,7 +19,7 @@ def tcplink(sock, addr):
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('0.0.0.0', 9999))
 s.listen(5)
-print('Waiting for connection...')
+print('Waiting for connection......')
 while True:
     # 接受一个新连接:
     sock, addr = s.accept()
