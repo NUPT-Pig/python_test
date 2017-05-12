@@ -1,0 +1,6 @@
+import daemon
+
+
+with daemon.DaemonContext():
+    while True:
+        print('******')
