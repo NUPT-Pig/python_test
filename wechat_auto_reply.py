@@ -5,18 +5,31 @@ import itchat
 KEY = '8edce3ce905a4c1dbb965e6b35c3834d'
 
 def get_response(msg):
+    #print msg
     # 这里我们就像在“3. 实现最简单的与图灵机器人的交互”中做的一样
     # 构造了要发送给服务器的数据
+    # 接口 http://www.tuling123.com/help/h_cent_webapi.jhtml?nav=doc
     apiUrl = 'http://www.tuling123.com/openapi/api'
     data = {
         'key'    : KEY,
         'info'   : msg,
         'userid' : 'wechat-robot',
     }
+    response_data = None
     try:
         r = requests.post(apiUrl, data=data).json()
+        response_code = r.get('code')
+        response_data = r.get('text')
+        if response_code == 200000:
+            response_data = response_data + '-' + r.get('url')
+        elif response_code == 302000:
+            for content in r.get('list'):
+                response_data = response_data + '-' + content['article'] + '--' + content['detailurl']
+        elif response_code == 308000:
+            for content in r.get('list'):
+                response_data = response_data + '-' + content['info'] + '--' + content['detailurl']
         # 字典的get方法在字典没有'text'值的时候会返回None而不会抛出异常
-        return r.get('text')
+        return response_data
     # 为了防止服务器没有正常响应导致程序异常退出，这里用try-except捕获了异常
     # 如果服务器没能正常交互（返回非json或无法连接），那么就会进入下面的return
     except:
